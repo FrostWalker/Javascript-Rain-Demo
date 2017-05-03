@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="" />
+
+    <title>MDDN 352 - Project One Pitch</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="css/normalise.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <!--[if IE]><script src="js/html5shiv.min.js"></script><![endif]-->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/location.js"></script>
+</head>
+<body>
+<div id="background"></div>
+<canvas width="1" height="1" id="weather_canvas" data-weather="storm"></canvas>
+<header>
+    <nav>
+        <li><img src="img/ic_arrow_upward_white_24px.svg" width="20px" height="20px"/><a href="#">Top</a></li>
+        <li><img src="img/ic_assignment_white_24px.svg" width="20px" height="20px"/><a href="#pitch">Pitch</a></li>
+        <li><img src="img/ic_cloud_white_24px.svg" width="20px" height="20px"/><a href="#weather">Weather</a></li>
+        <li><img src="img/ic_3d_rotation_white_24px.svg" width="20px" height="20px"/><a href="#accel">Accelerometer</a></li>
+        <li><img src="img/ic_language_white_24px.svg" width="20px" height="20px"/><a href="#gps">Geolocation</a></li>
+        <li><img src="img/ic_devices_white_24px.svg" width="20px" height="20px"/><a href="#device">Device</a></li>
+        <li><img src="img/ic_person_pin_white_24px.svg" width="20px" height="20px"/><a href="#credit">Credit</a></li>
+    </nav>
+</header>
+<div class="section transparent" id="cover">
+
+</div>
+<div class="section blue" id="pitch" name="pitch">
+    <div class="container">
+        <img class="top" src="img/ic_assignment_white_24px.svg" width="512px" height="512px"/>
+        <h2>Pitch</h2>
+        <div class="break"></div>
+        <p>
+            My project pitch revolves around the idea of "Live Weather", to allow the user to not only know the weather anywhere in the world, but also to <i>see</i> it via a simulated animation. The app starts by sourcing a 3d panorama image from google maps or another source, and displays it on the screen allowing the user to use their device as a "view window" into another location, and they can pan around the scene by moving their device in a 360 degree spherical motion.
+        </p>
+        <p><img class="geoimage" src="img/sketch_one.svg" width="512px" /></p>
+        <p>
+            The app makes use of webGL canvas to dynamically simulate weather effects on top of a sourced image. Because of this it can update in real time and adjust the parametres to create a realistic effect, without jarring transitions.
+        </p>
+        <p><img class="geoimage" src="img/sketch_two.svg" width="512px" /></p>
+        <p>
+            The also has "future sight", allowing the user to swipe on their phone to look at the weather in an hour or 12. This plays into the dynamic updating of the weather effects allowing it to smoothly slow into a drizzle and come to a complete stop if need be.
+        </p>
+    </div>
+</div>
+<div class="section transparent" id="weather" name="weather">
+    <div class="container">
+        <img class="top" src="img/ic_cloud_white_24px.svg" width="512px" height="512px"/>
+        <h2>Weather</h2>
+        <div class="break"></div>
+        <p>
+            The weather effects on this page use HTML5 canvas to generate artificial rain effects that can be manipulated in real time. Only rain is implemented in this demo, but it could easily be expanded to work with other weather conditions such as lightning storms and snow.
+        </p>
+        <div class="slider">
+            <p>Density : <span id="frequency"></span></p>
+            <input type="range" name="rainfreq" id="rainfreq" value="2000" min="0" max="8000" data-show-value="true" data-popup-enabled="true" data-highlight="true" />
+        </div>
+        <div class="slider">
+            <p>Angle : <span id="rotation"></span></p>
+            <input type="range" name="rainangl" id="rainangl" value="90" min="45" max="135" data-show-value="true" data-popup-enabled="true" data-highlight="true" />
+        </div>
+        <div class="slider">
+            <p>Speed : <span id="speed"></span></p>
+            <input type="range" name="rainspeed" id="rainspeed" value="100" min="0" max="200" data-show-value="true" data-popup-enabled="true" data-highlight="true" />
+        </div>
+        <p>
+            The HTML5 canvas works well when displaying the rain effects, but suffers a large performance hit on mobile, where it is often throttled to prevent the system from slowing. Finding a balance between aesthetics and performance for weather effects is difficult, and even the basic rain effect on this page can show noticeable lag on older devices, especially when the density is increased to large numbers.
+        </p>
+        <code>
+var ctx = canvas.getContext('2d');
+
+ctx.clearRect(0, 0, w, h);
+for(var i = 0; i < particles.length; ++i) {
+    var particle = particles[i];
+
+    ctx.beginPath();
+    ctx.moveTo(particle.x, particle.y);
+    ctx.lineTo(particle.x + particle.l * (particle.xs - (90 - a)), particle.y + particle.l * particle.ys);
+    ctx.stroke();
+
+    particle.x += (particle.xs - (90 - a));
+    particle.y += (particle.ys * 100) / s;
+    if(particle.x > w || particle.y > h) {
+        particle.x = Math.random() * w;
+        particle.y = -40 + Math.random() * h;
+    }
+}
+        </code>
+    </div>
+</div>
+<div class="section blue" id="accel" name="accel">
+    <div class="container">
+        <img class="top" src="img/ic_3d_rotation_white_24px.svg" width="512px" height="512px"/>
+        <h2>Accelerometer</h2>
+        <p>X : <span id="xaccel"></span></p>
+        <p>Y : <span id="yaccel"></span></p>
+        <p>Z : <span id="zaccel"></span></p>
+        <div class="break"></div>
+        <p>
+            The primary area of difficulty I faced when working with the device sensors was my initial assumption to use the device's gyroscope to read rotation data. This worked well using beta output of the ondeviceorientation function. After extensive tests I discovered that by instead using the accelerometer data instead I can read data relating to gravity and find the true "down" position regardless of the device's orientation.
+        </p>
+        <code>
+var x = event.accelerationIncludingGravity.x;
+var y = event.accelerationIncludingGravity.y;
+var z = event.accelerationIncludingGravity.z;
+        </code>
+    </div>
+</div>
+<div class="section transparent" id="gps" name="gps">
+    <div class="container">
+        <img class="top" src="img/ic_language_white_24px.svg" width="512px" height="512px"/>
+        <h2>Geolocation</h2>
+        <p>Latitude : <span id="gpslat"></span></p>
+        <p>Longitude : <span id="gpslong"></span></p>
+        <div class="break"></div>
+        <p>
+            The geolocation data would be used in two situations. The first is grabbing weather and emergency data that is relevant to the user based on their location. The second is to get information about which city they are in and display background graphics sourced from sites such as flickr, google street view, or another panorama image site.
+        </p>
+        <code>
+navigator.geolocation.getCurrentPosition(geolocationSuccess, [geolocationError], [geolocationOptions]);
+
+function geolocationSuccess(event) {
+    var latitude = event.coords.latitude;
+    var longtitude = event.coords.longtitude;
+}
+        </code>
+        <p>
+            The geolocation data provides a very accurate reading, and can leverage services such as google maps or other APIs to enhance feature offerings in the future.
+        </p>
+        <p><img id="geoimage" src="" width="640px" /></p>
+    </div>
+</div>
+<div class="section blue" id="device" name="device">
+    <div class="container">
+        <img class="top" src="img/ic_devices_white_24px.svg" width="512px" height="512px"/>
+        <h2>Device</h2>
+        <p>Screen Width : <span id="devwidth"></span></p>
+        <p>Screen Height : <span id="devheight"></span></p>
+        <p>Device Orientation : <span id="devorientation"></span></p>
+        <div class="break"></div>
+        <code>
+var width = screen.width;
+var height = screen.height;
+
+var orientation = screen.orientation || window.orientation;
+        </code>
+        <p>
+            The device orientation is an important factor when reading accelerometer data; as when the device is in landscape, the gravity, and thus the accelerometer data, is located on the Y axis. However in portrait mode, the data is instead located on the X axis.
+        </p>
+        <code>
+if(orientation == 90)
+    angle = -y;
+else if(orientation == 180)
+    angle = -x;
+else if(orientation == -90)
+    angle = y;
+else
+    angle = x;
+        </code>
+        <p>
+            Due to the performance capabilities of mobile and tablet devices, fixed cover background images are disabled on most mobile web browsers. As such a work-around is necessary. This was achieved by creating a fixed position div that scrolls with the page with a static cover background image, and dynamically setting the width and height via javascript to match the page size. The only compromise from this work-around is that the height of the image does not update until the user removes their finger to stop scrolling, and results in a blank area in the exposed portion at the bottom of the screen.
+        </p>
+        <code>
+&lt;body&gt;
+    &lt;div id=&quot;background&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+        </code>
+        <code>
+#background {
+    background: #00274c url('../img/background_blur.jpg') no-repeat;
+    background-position: center center!important;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: -2!important
+}
+        </code>
+    </div>
+</div>
+<div class="section transparent" id="credit" name="credit">
+    <div class="container">
+        <img class="top" src="img/ic_person_pin_white_24px.svg" width="512px" height="512px"/>
+        <h2>Credit</h2>
+        <div class="break"></div>
+        <code>
+Sam Pappafloratos
+MDDN 352 - Project One
+Victoria University of Wellington
+
+
+Background image sourced from <a href="https://www.flickr.com/photos/sprengben" target="_blank">@sprengben</a> on <a href="https://www.flickr.com/" targett="_blank">flickr</a> : <a href="https://www.flickr.com/photos/sprengben/3599984716" targett="_blank">https://www.flickr.com/photos/sprengben/3599984716</a>
+
+Icons sourced from <a href="https://design.google.com/" targett="_blank">Google Material Design</a> : <a href="https://design.google.com/icons/" targett="_blank">https://design.google.com/icons/</a>
+        </code>
+    </div>
+</div>
+</body>
+</html>
